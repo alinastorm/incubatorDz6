@@ -21,7 +21,7 @@ class Controller {
     }
     async createOne(
         req: RequestWithBody<BlogInputModel>,
-        res: ResponseWithBodyCode<BlogViewModel, 201>
+        res: ResponseWithBodyCode<BlogViewModel, 201 | 404>
     ) {
 
         const { name, youtubeUrl } = req.body
@@ -29,7 +29,8 @@ class Controller {
         const query: Omit<BlogViewModel, "id"> = { createdAt, name, youtubeUrl }
 
         const id: string = await blogsRepository.createOne(query)
-        const users: BlogViewModel = await blogsRepository.readOne(id)
+        const users: BlogViewModel | null = await blogsRepository.readOne(id)
+        if (!users) return res.status(HTTP_STATUSES.NOT_FOUND_404)
 
         res.status(HTTP_STATUSES.CREATED_201).send(users)
     }
@@ -61,16 +62,18 @@ class Controller {
     }
     async createPostsByBlogId(
         req: RequestWithParamsBody<{ blogId: string }, BlogPostInputModel>,
-        res: ResponseWithBodyCode<PostViewModel, 201>
+        res: ResponseWithBodyCode<PostViewModel, 201 | 404>
     ) {
         const blogId = req.params.blogId
         const { content, shortDescription, title } = req.body
-        const { name: blogName } = await blogsRepository.readOne<BlogViewModel>(blogId)
+        const blog = await blogsRepository.readOne<BlogViewModel>(blogId)
+        if (!blog) return res.status(HTTP_STATUSES.NOT_FOUND_404)
+        const { name: blogName } = blog
         const createdAt = new Date().toISOString()
         const query: Omit<PostViewModel, 'id'> = { blogId, blogName, content, createdAt, shortDescription, title }
         const id = await postsRepository.createOne(query)
-        const post = await postsRepository.readOne<PostViewModel>(id)
-
+        const post: PostViewModel | null = await postsRepository.readOne<PostViewModel>(id)
+        if (!post) return res.status(HTTP_STATUSES.NOT_FOUND_404)
         res.status(HTTP_STATUSES.CREATED_201).send(post)
     }
     async updateOne(

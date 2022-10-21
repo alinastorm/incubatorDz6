@@ -1,7 +1,7 @@
 import { BlogViewModel, HTTP_STATUSES, RequestWithBody, RequestWithQuery, UsersSearchPaginationModel, Paginator, UserViewModel, UserInputModel, RequestWithParams, ResponseWithBodyCode, AuthViewModel, SearchPaginationModel } from '../types/types';
 
 import authRepository from '../repository/auth-repository';
-import { generateHash } from '../services/crypto-service';
+import cryptoService from '../services/crypto-service';
 import usersRepository from '../repository/users-repository';
 import { Filter } from 'mongodb';
 
@@ -30,7 +30,7 @@ class Controller {
 
     async createOne(
         req: RequestWithBody<UserInputModel>,
-        res: ResponseWithBodyCode<UserViewModel, 201>
+        res: ResponseWithBodyCode<UserViewModel, 201 | 404>
     ) {
 
         const { email, login, password } = req.body
@@ -38,15 +38,16 @@ class Controller {
         const queryUser: Omit<UserViewModel, 'id'> = { email, login, createdAt }
         const userId: string = await usersRepository.createOne(queryUser)
 
-        const passwordHash = await generateHash(password)
+        const passwordHash = await cryptoService.generateHash(password)
 
         const queryAuth: Omit<AuthViewModel, "id"> = { passwordHash, userId, createdAt }
         const idAuth: string = await authRepository.createOne(queryAuth)
 
-        const user: UserViewModel = await usersRepository.readOne(userId)
-
+        const user: UserViewModel | null = await usersRepository.readOne(userId)
+        if (!user) return res.status(HTTP_STATUSES.NOT_FOUND_404)
         res.status(HTTP_STATUSES.CREATED_201).send(user)
     }
+
     async deleteOne(
         req: RequestWithParams<{ id: string }>,
         res: ResponseWithBodyCode<BlogViewModel, 204 | 404>

@@ -6,6 +6,7 @@ import * as core from 'express-serve-static-core';
 import * as http from 'http';
 import { usersRoutes } from '../routes/users-router';
 import { authRoutes } from '../routes/auth-router';
+import { commentsRoutes } from '../routes/comments-router';
 
 
 
@@ -22,7 +23,9 @@ class HttpService {
             blogsRoutes,
             postsRoutes,
             usersRoutes,
-            authRoutes
+            authRoutes,
+            commentsRoutes,
+
         ])
         //starting server
         this.server = this.app.listen(this.port, () => console.log(`http://localhost:${this.port}`))

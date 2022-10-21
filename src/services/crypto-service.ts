@@ -1,11 +1,17 @@
 import bcrypt from "bcrypt"
 
-export const generateHash = async (password: string, salt?: string) => {
-    const passwordSalt = salt || await bcrypt.genSalt(10)
-    const passwordHash = await bcrypt.hash(password, passwordSalt)
-    return passwordSalt + ":" + passwordHash
+
+
+const cryptoService = {
+    async generateHash(password: string, salt?: string) {
+        const passwordSalt = salt || await bcrypt.genSalt(10)
+        const passwordHash = await bcrypt.hash(password, passwordSalt)
+        return passwordSalt + ":" + passwordHash
+    },
+    async checkHash(passwordHash: string, pass: string) {
+        const [salt] = passwordHash.split(':')
+        return passwordHash === await this.generateHash(pass, salt)
+    }
+
 }
-export const checkHash = async (passwordHash: string, pass: string) => {
-    const [salt] = passwordHash.split(':')
-    return passwordHash === await generateHash(pass, salt)
-}
+export default cryptoService

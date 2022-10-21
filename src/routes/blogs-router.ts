@@ -2,9 +2,9 @@ import express from 'express';
 import blogsController from "../controllers/blogs-controller";
 import { nameBodyValidationMiddleware } from '../middlewares/name-validation-middleware';
 import { youtubeUrlBodyValidationMiddleware } from '../middlewares/youtubeUrl-validation-middleware';
-import { authorizationBasicMiddleware } from '../middlewares/authorization-validation-middleware';
+import { authorizationBasicMiddleware401 } from '../middlewares/authBasic-validation-middleware';
 
-import { mainValidator } from '../middlewares/mainValidator-middleware';
+import { mainValidator400 } from '../middlewares/mainValidator-middleware';
 import { searchNameTermQueryValidationMiddleware } from '../middlewares/searchNameTerm-query-validation-middleware';
 import { pageNumberQueryValidationMiddleware } from '../middlewares/pageNumber-validation-middleware';
 import { sortByBlogsQueryValidationMiddleware } from '../middlewares/sortByBlogs-validation-middleware';
@@ -29,10 +29,10 @@ blogsRoutes.get(`/blogs`,
     blogsController.readAllOrByNamePaginationSort)
 
 blogsRoutes.post(`/blogs`,
-    authorizationBasicMiddleware,
+    authorizationBasicMiddleware401,
     nameBodyValidationMiddleware,
     youtubeUrlBodyValidationMiddleware,
-    mainValidator,
+    mainValidator400,
     blogsController.createOne)
 
 blogsRoutes.get(`/blogs/:blogId/posts`,
@@ -41,40 +41,40 @@ blogsRoutes.get(`/blogs/:blogId/posts`,
     pageSizeQueryValidationMiddleware,
     sortByPostsQueryValidationMiddleware,
     sortDirectionQueryValidationMiddleware,
-    mainValidator,
+    mainValidator400,
     bloggerParamIdInBDValidationMiddleware,
-    blogsController.readAllPostsByBlogIdWithPaginationAndSort)
+    <any>blogsController.readAllPostsByBlogIdWithPaginationAndSort)
 
 
 blogsRoutes.post(`/blogs/:blogId/posts`,
-    authorizationBasicMiddleware,
+    authorizationBasicMiddleware401,
     blogIdParamUriValidationMiddleware,
     titleBodyValidationMiddleware,
     shortdescriptionBodyValidationMiddleware,
     contentBodyValidationMiddleware,
-    mainValidator,
+    mainValidator400,
     bloggerParamIdInBDValidationMiddleware,
     blogsController.createPostsByBlogId)
 
 blogsRoutes.get(`/blogs/:blogId`,
     blogIdParamUriValidationMiddleware,
-    mainValidator,
+    mainValidator400,
     bloggerParamIdInBDValidationMiddleware,
     blogsController.readOne)
 
 blogsRoutes.put(`/blogs/:blogId`,
-    authorizationBasicMiddleware,
+    authorizationBasicMiddleware401,
     blogIdParamUriValidationMiddleware,
     nameBodyValidationMiddleware,
     youtubeUrlBodyValidationMiddleware,
-    mainValidator,
+    mainValidator400,
     bloggerParamIdInBDValidationMiddleware,
     blogsController.updateOne)
 
 blogsRoutes.delete(`/blogs/:blogId`,
-    authorizationBasicMiddleware,
+    authorizationBasicMiddleware401,
     blogIdParamUriValidationMiddleware,
-    mainValidator,
+    mainValidator400,
     bloggerParamIdInBDValidationMiddleware,
     blogsController.deleteOne)
 

@@ -16,11 +16,11 @@ class Repository {
     }
     async readAllOrByPropPaginationSort<T>(data: SearchPaginationModel) {
         const { pageNumber, pageSize, sortBy, sortDirection, filter } = data
-        const result: Paginator<T[]> = await dataService.readAllOrByPropPaginationSort(this.collectionName, pageNumber, pageSize, sortBy, sortDirection, filter)
+        const result: Paginator<T> = await dataService.readAllOrByPropPaginationSort(this.collectionName, pageNumber, pageSize, sortBy, sortDirection, filter)
         return result
     }
     async readOne<T>(id: string) {
-        const result: T = await dataService.readOne(this.collectionName, id)
+        const result: T | null = await dataService.readOne(this.collectionName, id)
         return result
     }
     async createOne<T extends IObject>(element: Omit<T, "id">): Promise<string> {

@@ -87,7 +87,7 @@ describe("/users", () => {
                 "login": "User1",
                 "password": "Password1",
             })
-        expect(status).toBe(204)
+        expect(status).toBe(200)
     })
     test('Try login wrong user to the system', async () => {
         const { status } = await request(httpServerService.server)

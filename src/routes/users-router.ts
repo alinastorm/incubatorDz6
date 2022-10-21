@@ -2,9 +2,9 @@ import express from 'express';
 import usersController from "../controllers/users-controller";
 import { nameBodyValidationMiddleware } from '../middlewares/name-validation-middleware';
 import { youtubeUrlBodyValidationMiddleware } from '../middlewares/youtubeUrl-validation-middleware';
-import { authorizationBasicMiddleware } from '../middlewares/authorization-validation-middleware';
+import { authorizationBasicMiddleware401 } from '../middlewares/authBasic-validation-middleware';
 
-import { mainValidator } from '../middlewares/mainValidator-middleware';
+import { mainValidator400 } from '../middlewares/mainValidator-middleware';
 import { searchLoginTermQueryValidationMiddleware } from '../middlewares/searchLoginTerm-query-validation-middleware';
 import { searchEmailTermQueryValidationMiddleware } from '../middlewares/searchEmailTerm-query-validation-middleware';
 import { sortDirectionQueryValidationMiddleware } from '../middlewares/sortDirection-validation-middleware';
@@ -27,19 +27,19 @@ usersRoutes.get(`/users`,
     pageSizeQueryValidationMiddleware,
     sortByUsersQueryValidationMiddleware,
     sortDirectionQueryValidationMiddleware,
-    mainValidator,
-    usersController.readAllPagination)
+    mainValidator400,
+    <any>usersController.readAllPagination)
 
 usersRoutes.post(`/users`,
-    authorizationBasicMiddleware,
+    authorizationBasicMiddleware401,
     loginBodyValidationMiddleware,
     passwordBodyValidationMiddleware,
     emailBodyValidationMiddleware,
-    mainValidator,
+    mainValidator400,
     usersController.createOne)
 
 usersRoutes.delete(`/users/:id`,
-    authorizationBasicMiddleware,
+    authorizationBasicMiddleware401,
     userIdParamUriValidationMiddleware,
-    mainValidator,
+    mainValidator400,
     usersController.deleteOne)

@@ -1,10 +1,11 @@
 import { Collection, MongoClient, Document, ObjectId, Filter } from 'mongodb'
+import { settings } from '../settings';
 import { AdapterType, IObject, Paginator } from '../types/types';
 
 //Query Builder
 // Connection URL
-const url = 'mongodb+srv://AlexGr:mth0F2JOfBhmJlk4@cluster0.ojk6ayv.mongodb.net/?retryWrites=true&w=majority' || process.env.mongoURI || 'mongodb://127.0.0.1:27017' || 'строковое подключение к кластеру в атласе'
-const clientMongo = new MongoClient(url)
+const urlMongo = settings.MONGO_URI
+const clientMongo = new MongoClient(urlMongo)
 // Database Name
 const dbName = process.env.mongoDbName || 'learning';
 const database = clientMongo.db(dbName);

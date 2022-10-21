@@ -22,6 +22,8 @@ export interface BlogViewModel {
     name: string// max 15
     youtubeUrl: string
     createdAt: string
+
+
 }
 export interface PostViewModel {
     id: string
@@ -31,6 +33,8 @@ export interface PostViewModel {
     blogId: string
     blogName: string
     createdAt: string
+    //
+
 }
 export interface APIErrorResult {
     errorsMessages: FieldError[]
@@ -68,6 +72,7 @@ export enum HTTP_STATUSES {
     NO_CONTENT_204 = 204,
     BAD_REQUEST_400 = 400,
     UNAUTHORIZED_401 = 401,
+    NO_ACCESS_CONTENT_403 = 403,
     NOT_FOUND_404 = 404,
     SERVER_ERROR_500 = 500
 }
@@ -78,6 +83,8 @@ export type RequestWithQueryBody<Q, B> = Request<{}, {}, B, Q>
 export type RequestWithParamsQuery<P, Q> = Request<P, {}, {}, Q>
 export type RequestWithParamsBody<P, B> = Request<P, {}, B>
 export type RequestWithParamsQueryBody<P, Q, B> = Request<P, {}, B, Q>
+export type RequestWithUser<U> = Request & U
+
 
 
 export type ResponseWithCode<C extends number> = Response<{}, {}, C>
@@ -117,11 +124,11 @@ export interface UsersSearchPaginationModel {
      */
     sortDirection: 1 | -1
 }
-export interface SearchPaginationModel {
+export interface SearchPaginationModel<T = IObject> {
     /**search Name Term
      * Default value : null
      */
-     filter?: Filter<IObject>
+    filter?: Filter<T>
     /**PageNumber is number of portions that should be returned.
      * Default value : 1
      */
@@ -181,6 +188,8 @@ export interface AuthViewModel {
     // login: string // maxLength: 10 minLength: 3
     passwordHash: string // maxLength: 20 minLength: 6
     createdAt: string
+
+
 }
 export interface UserInputModel {
     login: string // maxLength: 10 minLength: 3
@@ -191,10 +200,49 @@ export interface UserViewModel {
     id: string
     login: string
     email: string
-    createdAt: string //	string($date-time)
+    createdAt?: string //	string($date-time)
+
+
 }
 export interface IObject { [key: string]: any }
 
+export interface CommentInputModel {
+    content: string //   maxLength: 300     minLength: 20
+}
+
+export interface CommentViewModel {
+    id: string //nullable: true
+    content: string
+    userId: string
+    userLogin: string
+    createdAt?: string//($date-time)
+
+}
+export interface CommentBdModel {
+    id: string //nullable: true
+    content: string
+    userId: string
+    userLogin: string
+    postId: string
+    createdAt?: string//($date-time)
+}
+export interface LoginSuccessViewModel {
+    accessToken: string //    JWT access token
+
+
+}
+export interface MeViewModel {
+    email: string
+    login: string
+    userId: string
+
+
+}
 export interface Dictionary {
     [key: string]: string
 }
+
+type Impossible<K extends keyof any> = {
+    [P in K]: never;
+};
+export type NoExtraProperties<T, U extends T = T> = U & Impossible<Exclude<keyof U, keyof T>>;
