@@ -1,6 +1,6 @@
 #
 It incubator
 ---
-Домашнее задание 2
+Домашнее задание
+https://api-swagger.it-incubator.ru/swagger/index.html?urls.primaryName=h06%20API
 ---
-Запуск npm start
